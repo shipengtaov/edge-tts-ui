@@ -20,14 +20,14 @@ def run_ui():
 
     voices = asyncio.run(edge_tts.list_voices())
 
-    voice_options = [voice['ShortName'] for voice in voices]
-    voice = st.selectbox("Select voice", voice_options)
+    voice_options = {f"{voice['FriendlyName']} - {voice['Gender']}": voice['ShortName'] for voice in voices}
+    voice = st.selectbox("Select voice", voice_options.keys())
 
     if st.button("Synthesize"):
         if text and voice:
             st.write("Synthesizing...")
             try:
-                audio_file = asyncio.run(synthesize_text(text, voice))
+                audio_file = asyncio.run(synthesize_text(text, voice_options[voice]))
                 st.audio(audio_file, format='audio/mp3')
                 st.success("Audio synthesized successfully")
 
